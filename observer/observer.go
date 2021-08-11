@@ -19,6 +19,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"sync/atomic"
 	"time"
 
@@ -107,6 +108,12 @@ func (s *Observer) GetFlows(req *observer.GetFlowsRequest, srv observer.Observer
 		case <-ctx.Done():
 			return errors.New("cancelled")
 		case err := <-errs:
+			if err == nil {
+				// scanner masks EOF as nil, unmask it here
+				// in order to distinguish from the general
+				// non-errors cases of this function
+				return io.EOF
+			}
 			return err
 		}
 		return nil
@@ -122,6 +129,9 @@ func (s *Observer) GetFlows(req *observer.GetFlowsRequest, srv observer.Observer
 		log.Debug("follow")
 		for {
 			if err := respond(); err != nil {
+				if err == io.EOF {
+					return nil
+				}
 				return err
 			}
 		}

@@ -129,9 +129,6 @@ func (s *Observer) GetFlows(req *observer.GetFlowsRequest, srv observer.Observer
 		log.Debug("follow")
 		for {
 			if err := respond(); err != nil {
-				if err == io.EOF {
-					return nil
-				}
 				return err
 			}
 		}

@@ -139,7 +139,6 @@ func (s *Observer) GetFlows(req *observer.GetFlowsRequest, srv observer.Observer
 
 // ServerStatus implements ObserverServer for the Observer struct.
 func (s *Observer) ServerStatus(ctx context.Context, req *observer.ServerStatusRequest) (*observer.ServerStatusResponse, error) {
-	// logging setup.
 	log := s.log.WithField("method", "ServerStatus")
 	if p, ok := peer.FromContext(ctx); ok {
 		log = log.WithField("from", p.Addr.String())

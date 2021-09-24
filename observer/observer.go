@@ -42,6 +42,8 @@ type Observer struct {
 	observer.UnimplementedObserverServer
 }
 
+var _ observer.ObserverServer = &Observer{}
+
 // New create and return a new Observer that can be used as a Hubble Observer service.
 func New(log logrus.FieldLogger, options ...Option) (*Observer, error) {
 	opts := Options{
@@ -152,5 +154,3 @@ func (s *Observer) ServerStatus(ctx context.Context, req *observer.ServerStatusR
 		UptimeNs:  uint64(time.Since(s.startTime).Nanoseconds()),
 	}, nil
 }
-
-func (s *Observer) Stop() {}

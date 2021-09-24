@@ -73,7 +73,6 @@ func start(ctx context.Context, log *logrus.Logger, dir, address string, rateAdj
 		case <-ctx.Done():
 			log.WithField("address", address).Info("Stopping Hubble server")
 			mockServer.Stop()
-			mockObeserver.Stop()
 			return nil
 		}
 	}

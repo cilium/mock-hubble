@@ -1,4 +1,4 @@
-module github.com/isovalent/mock-hubble
+module github.com/cilium/mock-hubble
 
 go 1.16
 

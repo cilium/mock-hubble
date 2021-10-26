@@ -12,7 +12,7 @@ import (
 	"github.com/cilium/cilium/pkg/hubble/server/serveroption"
 	"github.com/cilium/cilium/pkg/logging/logfields"
 
-	mockHubbleObeserver "github.com/isovalent/mock-hubble/observer"
+	mockHubbleObeserver "github.com/cilium/mock-hubble/observer"
 )
 
 func main() {

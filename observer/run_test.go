@@ -28,7 +28,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	. "github.com/isovalent/mock-hubble/observer"
+	. "github.com/cilium/mock-hubble/observer"
 )
 
 const (

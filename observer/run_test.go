@@ -61,7 +61,7 @@ func TestRun(t *testing.T) {
 	defer hubbleConn.Close()
 
 	flowObsever, err := observer.NewObserverClient(hubbleConn).
-		GetFlows(ctx, &observer.GetFlowsRequest{Follow: true})
+		GetFlows(ctx, &observer.GetFlowsRequest{Follow: true}, grpc.WaitForReady(true))
 	if err != nil {
 		t.Fatalf("failed to create Hubble client: %v", err)
 		return

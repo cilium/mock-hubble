@@ -12,7 +12,7 @@ import (
 	"github.com/cilium/cilium/pkg/hubble/server/serveroption"
 	"github.com/cilium/cilium/pkg/logging/logfields"
 
-	mockHubbleObeserver "github.com/cilium/mock-hubble/observer"
+	mockHubbleObserver "github.com/cilium/mock-hubble/observer"
 )
 
 func main() {
@@ -39,9 +39,9 @@ func main() {
 }
 
 func start(ctx context.Context, log *logrus.Logger, dir, address string, rateAdjustment int) error {
-	mockObeserver, err := mockHubbleObeserver.New(log.WithField(logfields.LogSubsys, "mock-hubble-observer"),
-		mockHubbleObeserver.WithSampleDir(dir),
-		mockHubbleObeserver.WithRateAdjustment(int64(rateAdjustment)),
+	mockObserver, err := mockHubbleObserver.New(log.WithField(logfields.LogSubsys, "mock-hubble-observer"),
+		mockHubbleObserver.WithSampleDir(dir),
+		mockHubbleObserver.WithRateAdjustment(int64(rateAdjustment)),
 	)
 	if err != nil {
 		return err
@@ -50,31 +50,24 @@ func start(ctx context.Context, log *logrus.Logger, dir, address string, rateAdj
 	mockServer, err := server.NewServer(log.WithField(logfields.LogSubsys, "mock-hubble-server"),
 		serveroption.WithTCPListener(address),
 		serveroption.WithHealthService(),
-		serveroption.WithObserverService(mockObeserver),
+		serveroption.WithObserverService(mockObserver),
 		serveroption.WithInsecure(),
 	)
 	if err != nil {
 		return err
 	}
 
-	log.WithField("address", address).Info("Starting Hubble server")
+	go func() {
+		// Stop the mock server on interrupt.
+		// This goroutine can complete before the server starts, then Serve() will return an error.
+		<-ctx.Done()
+		log.WithField("address", address).Info("Stopping Hubble server")
+		mockServer.Stop()
+	}()
 
+	log.WithField("address", address).Info("Starting Hubble server")
 	if err := mockServer.Serve(); err != nil {
 		return err
 	}
-
-	errs := make(chan error)
-	defer close(errs)
-
-	for {
-		select {
-		case err = <-errs:
-			return err
-		case <-ctx.Done():
-			log.WithField("address", address).Info("Stopping Hubble server")
-			mockServer.Stop()
-			return nil
-		}
-	}
-
+	return nil
 }

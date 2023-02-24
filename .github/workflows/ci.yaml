@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v1
-      - uses: docker://docker.io/library/golang:1.17.1@sha256:285cf0cb73ab995caee61b900b2be123cd198f3541ce318c549ea5ff9832bdf0
+      - uses: docker://docker.io/library/golang:1.20.1@sha256:52921e63cc544c79c111db1d8461d8ab9070992d9c636e1573176642690c14b5
         name: Run unit tests
         with:
           entrypoint: go
           args: test -v ./...
-      - uses: docker://docker.io/library/golang:1.17.1@sha256:285cf0cb73ab995caee61b900b2be123cd198f3541ce318c549ea5ff9832bdf0
+      - uses: docker://docker.io/library/golang:1.20.1@sha256:52921e63cc544c79c111db1d8461d8ab9070992d9c636e1573176642690c14b5
         name: Run go vet
         with:
           entrypoint: go
@@ -31,7 +31,7 @@ jobs:
         GOARCH: [amd64, arm64]
     steps:
       - uses: actions/checkout@v1
-      - uses: docker://docker.io/library/golang:1.17.1@sha256:285cf0cb73ab995caee61b900b2be123cd198f3541ce318c549ea5ff9832bdf0
+      - uses: docker://docker.io/library/golang:1.20.1@sha256:52921e63cc544c79c111db1d8461d8ab9070992d9c636e1573176642690c14b5
         env:
           GOOS: ${{ matrix.GOOS }}
           GOARCH: ${{ matrix.GOARCH }}
